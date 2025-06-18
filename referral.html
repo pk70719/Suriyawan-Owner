@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Referral Setup - Suriyawan Saffari</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body { font-family: Arial, sans-serif; background: #eef2f7; padding: 20px; }
+    .container { max-width: 600px; margin: auto; background: white; padding: 2rem; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+    h2 { text-align: center; color: #0050b3; }
+    label { display: block; margin: 1rem 0 0.3rem; }
+    input, select { width: 100%; padding: 10px; margin-bottom: 1rem; border-radius: 6px; border: 1px solid #ccc; }
+    button { background: #28a745; color: white; padding: 10px 20px; border: none; border-radius: 6px; cursor: pointer; }
+    button:hover { background: #218838; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>🎁 Referral Program Setup</h2>
+    <label>Referral Reward (₹)</label>
+    <input type="number" id="reward" value="10" />
+
+    <label>Max Referrals / Day</label>
+    <input type="number" id="limit" value="10" />
+
+    <label>Status</label>
+    <select id="status">
+      <option value="enabled">Enabled</option>
+      <option value="disabled">Disabled</option>
+    </select>
+
+    <button onclick="saveReferral()">✅ Save Settings</button>
+  </div>
+
+  <script>
+    const token = localStorage.getItem("ownerToken");
+    if (!token) { alert("Please login first"); location.href = "login.html"; }
+
+    function saveReferral() {
+      const reward = document.getElementById("reward").value;
+      const limit = document.getElementById("limit").value;
+      const status = document.getElementById("status").value;
+
+      fetch("https://suriyawan-backend-18.onrender.com/api/owner/referral", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + token
+        },
+        body: JSON.stringify({ reward, limit, status })
+      })
+      .then(res => res.json())
+      .then(data => {
+        alert(data.message || "✅ Referral settings saved");
+      })
+      .catch(() => alert("❌ Failed to save referral settings"));
+    }
+  </script>
+</body>
+</html>
