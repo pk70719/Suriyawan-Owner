@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Tracking ID Generator</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body { font-family: sans-serif; background: #f4f6f9; padding: 2rem; }
+    .container { max-width: 600px; margin: auto; background: #fff; padding: 2rem; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+    h2 { text-align: center; color: #007bff; }
+    label { display: block; margin-top: 1rem; }
+    input, textarea { width: 100%; padding: 10px; border-radius: 5px; margin-top: 5px; border: 1px solid #ccc; }
+    button { margin-top: 1rem; background: #28a745; color: white; padding: 10px 20px; border: none; border-radius: 6px; cursor: pointer; }
+    #barcode { margin-top: 1rem; text-align: center; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>📦 Tracking ID Generator</h2>
+
+    <label>Product Name</label>
+    <input id="product" placeholder="Ex: Redmi Note 12" />
+
+    <label>Customer Name</label>
+    <input id="customer" />
+
+    <label>Address</label>
+    <textarea id="address" rows="3"></textarea>
+
+    <label>Mobile Number</label>
+    <input id="mobile" type="tel" />
+
+    <button onclick="generate()">✅ Generate Tracking ID</button>
+
+    <div id="barcode"></div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/jsbarcode/3.11.5/JsBarcode.all.min.js"></script>
+  <script>
+    function generate() {
+      const id = Math.floor(10000000 + Math.random() * 90000000);
+      const barcodeDiv = document.getElementById("barcode");
+      barcodeDiv.innerHTML = `<svg id="code128"></svg><p>Tracking ID: ${id}</p>`;
+      JsBarcode("#code128", id.toString(), { format: "CODE128", width: 2, height: 50 });
+    }
+  </script>
+</body>
+</html>
