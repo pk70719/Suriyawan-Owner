@@ -26,7 +26,7 @@ document.addEventListener("DOMContentLoaded", () => {
     submitButton.innerText = "⏳ Logging in...";
 
     try {
-      const response = await fetch("https://suriyawan-backend-18.onrender.com/api/owner/login", {
+      const response = await fetch("https://suriyawan-backend-68z3.onrender.com", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
