@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Tools & Generators - Suriyawan Saffari</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body { font-family: Arial, sans-serif; background: #f9f9f9; padding: 2rem; }
+    .tools { max-width: 800px; margin: auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; }
+    .card { background: white; padding: 1.5rem; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); text-align: center; cursor: pointer; }
+    .card:hover { background: #f0f8ff; }
+    h2 { text-align: center; margin-bottom: 1.5rem; color: #007bff; }
+  </style>
+</head>
+<body>
+  <h2>🧰 Tools & Generators</h2>
+  <div class="tools">
+    <div class="card" onclick="go('tracking.html')">📦 Tracking ID Generator</div>
+    <div class="card" onclick="go('invoice.html')">🧾 Invoice Generator</div>
+    <div class="card" onclick="go('idgenerator.html')">🆔 ID Generator</div>
+    <div class="card" onclick="go('document.html')">📄 Document Generator</div>
+    <div class="card" onclick="go('randomcontent.html')">🎲 Random Content Tool</div>
+    <div class="card" onclick="go('coupon.html')">🏷️ Coupon Code Generator</div>
+    <div class="card" onclick="go('label.html')">🚚 Parcel Label Generator</div>
+  </div>
+
+  <script>
+    function go(page) {
+      window.location.href = page;
+    }
+  </script>
+</body>
+</html>
