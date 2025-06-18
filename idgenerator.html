@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>ID Generator</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body { font-family: sans-serif; background: #f7f9fc; padding: 2rem; }
+    .box { max-width: 500px; margin: auto; background: white; padding: 2rem; border-radius: 12px; box-shadow: 0 0 10px rgba(0,0,0,0.1); text-align: center; }
+    h2 { color: #1890ff; }
+    select, button { margin-top: 1rem; padding: 10px; font-size: 1rem; border-radius: 5px; }
+    #result { margin-top: 2rem; font-size: 1.5rem; font-weight: bold; color: #333; }
+  </style>
+</head>
+<body>
+  <div class="box">
+    <h2>🆔 Auto ID Generator</h2>
+    <select id="idType">
+      <option value="customer">🛍️ Customer ID</option>
+      <option value="seller">🏪 Seller ID</option>
+      <option value="delivery">🚚 Delivery Boy ID</option>
+    </select><br>
+    <button onclick="generateId()">🔄 Generate ID</button>
+    <div id="result"></div>
+  </div>
+
+  <script>
+    function generateId() {
+      const type = document.getElementById("idType").value;
+      const random = Math.floor(100000 + Math.random() * 900000);
+      const prefix = type === "customer" ? "CUS" : type === "seller" ? "SEL" : "DEL";
+      document.getElementById("result").textContent = `✅ ${prefix}-${random}`;
+    }
+  </script>
+</body>
+</html>
