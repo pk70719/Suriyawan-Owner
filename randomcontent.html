@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Random Content Generator</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body { font-family: sans-serif; background: #f4f6f9; padding: 2rem; }
+    .box { max-width: 600px; margin: auto; background: white; padding: 2rem; border-radius: 12px; box-shadow: 0 0 12px rgba(0,0,0,0.1); text-align: center; }
+    h2 { color: #007bff; }
+    select, button { margin-top: 1rem; padding: 10px; font-size: 1rem; border-radius: 5px; }
+    #output { margin-top: 2rem; padding: 1rem; background: #f0f2f5; border-radius: 8px; min-height: 100px; }
+  </style>
+</head>
+<body>
+  <div class="box">
+    <h2>🧠 Random Content Generator</h2>
+    <select id="type">
+      <option value="quote">📜 Motivational Quote</option>
+      <option value="joke">😂 Funny Joke</option>
+      <option value="blog">📝 Blog Topic</option>
+    </select><br>
+    <button onclick="generate()">🎲 Generate</button>
+    <div id="output"></div>
+  </div>
+
+  <script>
+    const quotes = [
+      "Believe you can and you're halfway there.",
+      "Success is not final, failure is not fatal.",
+      "Do something today that your future self will thank you for."
+    ];
+    const jokes = [
+      "Why don't scientists trust atoms? Because they make up everything!",
+      "I told my computer I needed a break, and now it won’t stop sending me KitKats.",
+      "Why did the developer go broke? Because he used up all his cache."
+    ];
+    const blogs = [
+      "Top 10 Ways to Grow Your Business Online",
+      "How to Manage Remote Teams Effectively",
+      "Why Branding Matters in 2025"
+    ];
+
+    function generate() {
+      const type = document.getElementById("type").value;
+      let result = "";
+      if (type === "quote") {
+        result = quotes[Math.floor(Math.random() * quotes.length)];
+      } else if (type === "joke") {
+        result = jokes[Math.floor(Math.random() * jokes.length)];
+      } else if (type === "blog") {
+        result = blogs[Math.floor(Math.random() * blogs.length)];
+      }
+      document.getElementById("output").textContent = result;
+    }
+  </script>
+</body>
+</html>
