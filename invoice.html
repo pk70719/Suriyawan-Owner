@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Invoice Generator</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body { font-family: sans-serif; padding: 2rem; background: #fafafa; }
+    .box { max-width: 700px; margin: auto; background: white; padding: 2rem; border-radius: 10px; box-shadow: 0 0 12px rgba(0,0,0,0.1); }
+    h2 { text-align: center; margin-bottom: 1rem; color: #007bff; }
+    label { display: block; margin-top: 1rem; }
+    input { width: 100%; padding: 10px; margin-top: 5px; border-radius: 5px; border: 1px solid #ccc; }
+    button { margin-top: 1rem; background: #007bff; color: white; padding: 10px 20px; border: none; border-radius: 5px; }
+    #invoiceResult { margin-top: 2rem; padding: 1rem; border: 1px dashed #aaa; background: #f9f9f9; white-space: pre-wrap; }
+  </style>
+</head>
+<body>
+  <div class="box">
+    <h2>🧾 Invoice Generator</h2>
+    <label>Product</label><input id="pname" />
+    <label>Price (₹)</label><input id="price" type="number" />
+    <label>Customer Name</label><input id="cname" />
+    <label>Date</label><input id="date" type="date" />
+
+    <button onclick="generateInvoice()">📄 Generate Invoice</button>
+
+    <div id="invoiceResult"></div>
+  </div>
+
+  <script>
+    function generateInvoice() {
+      const p = document.getElementById("pname").value;
+      const pr = document.getElementById("price").value;
+      const c = document.getElementById("cname").value;
+      const d = document.getElementById("date").value;
+      const invoice = `
+🔖 Suriyawan Saffari Invoice
+-----------------------------
+Product: ${p}
+Price: ₹${pr}
+Customer: ${c}
+Date: ${d}
+Invoice ID: #INV${Math.floor(Math.random() * 1000000)}
+-----------------------------
+Thank you for shopping with us!
+      `;
+      document.getElementById("invoiceResult").textContent = invoice;
+    }
+  </script>
+</body>
+</html>
