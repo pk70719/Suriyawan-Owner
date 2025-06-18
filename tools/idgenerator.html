@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>ID Generator</title>
+  <style>
+    body { font-family: sans-serif; padding: 2rem; }
+    button { background: #0066ff; color: white; padding: 10px; border: none; }
+    #result { margin-top: 1rem; font-size: 1.3rem; }
+  </style>
+</head>
+<body>
+  <h2>🔐 Customer/Seller ID Generator</h2>
+  <button onclick="generateID()">Generate ID</button>
+  <div id="result"></div>
+
+  <script>
+    function generateID() {
+      const id = "ID" + Math.floor(100000 + Math.random() * 900000);
+      document.getElementById("result").textContent = "Generated ID: " + id;
+    }
+  </script>
+</body>
+</html>
