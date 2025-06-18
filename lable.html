@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Parcel Label Generator</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body { font-family: Arial, sans-serif; padding: 2rem; background: #f0f2f5; }
+    .wrapper { max-width: 600px; margin: auto; background: #fff; padding: 2rem; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+    label { display: block; margin-top: 1rem; }
+    input, textarea { width: 100%; padding: 10px; margin-top: 5px; border: 1px solid #ccc; border-radius: 6px; }
+    button { margin-top: 1.5rem; background: #007bff; color: white; padding: 10px 20px; border: none; border-radius: 6px; cursor: pointer; }
+    #output { margin-top: 2rem; padding: 1rem; background: #fefefe; border: 1px dashed #999; text-align: center; }
+  </style>
+</head>
+<body>
+  <div class="wrapper">
+    <h2>🚚 Parcel Label Generator</h2>
+
+    <label>Sender Name</label><input id="sender" />
+    <label>Recipient Name</label><input id="recipient" />
+    <label>Address</label><textarea id="address" rows="3"></textarea>
+    <label>Contact No.</label><input id="contact" />
+
+    <button onclick="generateLabel()">Generate Label</button>
+
+    <div id="output"></div>
+  </div>
+
+  <script>
+    function generateLabel() {
+      const sender = document.getElementById("sender").value;
+      const recipient = document.getElementById("recipient").value;
+      const address = document.getElementById("address").value;
+      const contact = document.getElementById("contact").value;
+      const tid = "TRK" + Math.floor(Math.random() * 10000000);
+
+      document.getElementById("output").innerHTML = `
+        <b>Suriyawan Saffari Parcel Label</b><hr>
+        From: ${sender}<br>
+        To: ${recipient}<br>
+        Address: ${address}<br>
+        Contact: ${contact}<br><br>
+        <b>Tracking ID: ${tid}</b>
+      `;
+    }
+  </script>
+</body>
+</html>
