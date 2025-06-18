@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Random Content Generator</title>
+  <style>
+    body { font-family: sans-serif; padding: 2rem; }
+    button { padding: 10px 20px; background: green; color: white; border: none; }
+    .output { margin-top: 1rem; font-size: 1.2rem; }
+  </style>
+</head>
+<body>
+  <h2>🌀 Random Website Content</h2>
+  <button onclick="generate()">Generate Quote</button>
+  <div class="output" id="output"></div>
+
+  <script>
+    const quotes = [
+      "Success is not final, failure is not fatal.",
+      "Be the change you want to see in the world.",
+      "Opportunities don't happen. You create them.",
+      "Don’t wait. The time will never be just right."
+    ];
+
+    function generate() {
+      const random = quotes[Math.floor(Math.random() * quotes.length)];
+      document.getElementById("output").textContent = random;
+    }
+  </script>
+</body>
+</html>
