@@ -1,57 +1,101 @@
-<!-- OWNER PORTAL - MODULE 1: salary.html --><!DOCTYPE html><html lang="en">
+<!DOCTYPE html>
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Delivery Boy Salary - Suriyawan Saffari</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <title>💰 Salary Control - Owner Panel</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <style>
-    body { font-family: Arial, sans-serif; background: #f8f8f8; padding: 2rem; }
-    h2 { text-align: center; color: #0050b3; }
-    .container { max-width: 800px; margin: auto; background: #fff; padding: 1.5rem; border-radius: 8px; }
-    table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
-    th, td { padding: 0.8rem; border: 1px solid #ddd; text-align: left; }
-    th { background-color: #007bff; color: white; }
-    input[type="number"] { width: 60px; }
-    button { margin-top: 1rem; padding: 10px 20px; background: #28a745; color: #fff; border: none; border-radius: 5px; cursor: pointer; }
+    body {
+      font-family: sans-serif;
+      padding: 2rem;
+      background: #f2f2f2;
+    }
+    .box {
+      background: #fff;
+      padding: 2rem;
+      border-radius: 12px;
+      max-width: 500px;
+      margin: auto;
+      box-shadow: 0 5px 10px rgba(0,0,0,0.1);
+    }
+    h2 {
+      text-align: center;
+      color: #007bff;
+    }
+    label {
+      display: block;
+      margin-top: 1rem;
+    }
+    input {
+      width: 100%;
+      padding: 10px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+    button {
+      margin-top: 1.5rem;
+      width: 100%;
+      padding: 10px;
+      background: #007bff;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #0056b3;
+    }
+    .msg {
+      margin-top: 1rem;
+      text-align: center;
+      font-weight: bold;
+    }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h2>💼 Delivery Boy Salary Control</h2>
-    <table>
-      <thead>
-        <tr><th>Name</th><th>Mobile</th><th>Orders</th><th>Salary/Order (₹)</th><th>Total (₹)</th></tr>
-      </thead>
-      <tbody id="salary-table"></tbody>
-    </table>
-    <button onclick="updateSalary()">💾 Save Salary</button>
-  </div>  <script src="salary.js"></script></body>
-</html>/* salary.js */ const token = localStorage.getItem("ownerToken"); fetch("https://suriyawan-backend-18.onrender.com/api/owner/delivery-salary", { method: "GET", headers: { "Authorization": Bearer ${token} } }) .then(res => res.json()) .then(data => { const table = document.getElementById("salary-table"); data.deliveryBoys.forEach(boy => { const row = document.createElement("tr"); row.innerHTML = <td>${boy.name}</td> <td>${boy.mobile}</td> <td>${boy.orders}</td> <td><input type='number' value='${boy.salary}' data-id='${boy._id}' /></td> <td>${boy.orders * boy.salary}</td>; table.appendChild(row); }); });
-
-function updateSalary() { const inputs = document.querySelectorAll("input[type=number]"); const updates = Array.from(inputs).map(input => ({ id: input.dataset.id, salary: input.value })); fetch("https://suriyawan-backend-18.onrender.com/api/owner/update-salary", { method: "POST", headers: { "Content-Type": "application/json", "Authorization": Bearer ${token} }, body: JSON.stringify({ updates }) }) .then(res => res.json()) .then(res => alert(res.message || "Updated!")); }
-
-<!-- OWNER PORTAL - MODULE 2: pincontrol.html --><!DOCTYPE html><html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>PIN Code Control</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <style>
-    body { font-family: sans-serif; padding: 2rem; background: #f0f0f0; }
-    h2 { text-align: center; color: #333; }
-    .container { max-width: 600px; margin: auto; background: white; padding: 2rem; border-radius: 8px; }
-    input, button { padding: 0.5rem; margin: 0.5rem 0; width: 100%; }
-    .pin-list { margin-top: 1rem; }
-  </style>
-</head>
-<body>
-  <div class="container">
-    <h2>📍 PIN Code Activation</h2>
-    <input type="text" id="pinInput" placeholder="Enter PIN Code">
-    <button onclick="addPIN()">➕ Add PIN</button>
-    <div class="pin-list" id="pinList"></div>
+  <div class="box">
+    <h2>💰 Set Delivery Boy Salary (₹/order)</h2>
+    <label for="salary">Enter Amount (e.g. 20)</label>
+    <input type="number" id="salary" min="0" placeholder="Enter new salary per order" />
+    <button onclick="updateSalary()">Update Salary</button>
+    <div class="msg" id="messageBox"></div>
   </div>
-  <script src="pincontrol.js"></script>
+
+  <script>
+    const token = localStorage.getItem("ownerToken");
+
+    function updateSalary() {
+      const salary = document.getElementById("salary").value;
+
+      fetch("https://suriyawan-backend-18.onrender.com/api/owner/update-salary", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer " + token
+        },
+        body: JSON.stringify({ amount: salary })
+      })
+      .then(res => res.json())
+      .then(data => {
+        document.getElementById("messageBox").innerText = data.message || "Updated!";
+      })
+      .catch(err => {
+        console.error(err);
+        document.getElementById("messageBox").innerText = "Failed to update!";
+      });
+    }
+
+    window.onload = () => {
+      fetch("https://suriyawan-backend-18.onrender.com/api/owner/delivery-salary", {
+        headers: { "Authorization": "Bearer " + token }
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.amount) {
+          document.getElementById("salary").value = data.amount;
+        }
+      });
+    };
+  </script>
 </body>
-</html>/* pincontrol.js */ const pinToken = localStorage.getItem("ownerToken"); function addPIN() { const pin = document.getElementById("pinInput").value; fetch("https://suriyawan-backend-18.onrender.com/api/owner/pincode", { method: "POST", headers: { "Content-Type": "application/json", "Authorization": Bearer ${pinToken} }, body: JSON.stringify({ pin }) }) .then(res => res.json()) .then(data => alert(data.message)); }
-
-fetch("https://suriyawan-backend-18.onrender.com/api/owner/pincode", { headers: { "Authorization": Bearer ${pinToken} } }) .then(res => res.json()) .then(data => { const pinList = document.getElementById("pinList"); data.pins.forEach(pin => { const el = document.createElement("div"); el.textContent = 📌 ${pin}; pinList.appendChild(el); }); });
-
+</html>
