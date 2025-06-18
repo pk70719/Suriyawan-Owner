@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Activity Logs - Suriyawan Saffari</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body { font-family: Arial, sans-serif; background: #eef0f3; padding: 20px; }
+    .container { max-width: 800px; margin: auto; background: white; padding: 1.5rem; border-radius: 10px; box-shadow: 0 0 8px rgba(0,0,0,0.1); }
+    h2 { text-align: center; margin-bottom: 1rem; color: #222; }
+    ul { list-style: none; padding: 0; }
+    li { padding: 10px; border-bottom: 1px solid #ddd; }
+    .time { font-size: 0.8rem; color: gray; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>📜 Activity Logs</h2>
+    <ul id="logsList"><li>Loading...</li></ul>
+  </div>
+
+  <script>
+    const token = localStorage.getItem("ownerToken");
+    if (!token) { alert("Please login first"); location.href = "login.html"; }
+
+    fetch("https://suriyawan-backend-18.onrender.com/api/owner/logs", {
+      headers: { Authorization: "Bearer " + token }
+    })
+    .then(res => res.json())
+    .then(data => {
+      const list = document.getElementById("logsList");
+      list.innerHTML = "";
+      data.logs.forEach(log => {
+        const li = document.createElement("li");
+        li.innerHTML = `<b>${log.action}</b><div class="time">${log.time}</div>`;
+        list.appendChild(li);
+      });
+    })
+    .catch(() => {
+      document.getElementById("logsList").innerHTML = "<li>❌ Unable to load logs</li>";
+    });
+  </script>
+</body>
+</html>
