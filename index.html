@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Suriyawan Saffari - Owner Login</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet" />
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Roboto', sans-serif;
+    }
+    body {
+      background-color: #eef3f8;
+      text-align: center;
+      padding: 50px 20px;
+    }
+    .login-box {
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 0 25px rgba(0,0,0,0.08);
+      display: inline-block;
+      max-width: 400px;
+      width: 100%;
+    }
+    .login-box h2 {
+      margin-bottom: 20px;
+      color: #0050b3;
+    }
+    .user-box {
+      margin-bottom: 15px;
+      text-align: left;
+    }
+    .user-box label {
+      font-weight: 600;
+    }
+    .user-box input {
+      width: 100%;
+      padding: 10px;
+      font-size: 16px;
+      margin-top: 5px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+    }
+    button {
+      padding: 10px 25px;
+      background-color: #0070f3;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+      transition: background 0.3s ease;
+    }
+    button:hover {
+      background-color: #005ac1;
+    }
+    #status-box {
+      margin-top: 20px;
+      font-weight: bold;
+      color: #555;
+    }
+    #login-message {
+      margin-top: 10px;
+      font-size: 15px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <div class="login-box">
+    <h2>👑 Owner Panel Login</h2>
+    <form id="login-form">
+      <div class="user-box">
+        <label>Username</label>
+        <input type="text" id="username" placeholder="Enter Username" required />
+      </div>
+      <div class="user-box">
+        <label>Password</label>
+        <input type="password" id="password" placeholder="Enter Password" required />
+      </div>
+      <button type="submit">Login</button>
+    </form>
+    <p id="login-message"></p>
+  </div>
+
+  <div id="status-box">🔄 Connecting to Suriyawan Backend...</div>
+
+  <script>
+    const BACKEND_URL = "https://suriyawan-backend-18.onrender.com";
+
+    // ✅ Backend connectivity check
+    fetch(`${BACKEND_URL}/api/owner/ping`)
+      .then(res => res.json())
+      .then(data => {
+        document.getElementById('status-box').innerText = "✅ Backend connected successfully!";
+      })
+      .catch(() => {
+        document.getElementById('status-box').innerText = "❌ Failed to connect to backend.";
+      });
+
+    // ✅ Login functionality
+    document.getElementById("login-form").addEventListener("submit", async function (e) {
+      e.preventDefault();
+      const username = document.getElementById("username").value.trim();
+      const password = document.getElementById("password").value.trim();
+      const messageBox = document.getElementById("login-message");
+
+      if (!username || !password) {
+        messageBox.innerText = "⚠️ Both fields are required!";
+        messageBox.style.color = "red";
+        return;
+      }
+
+      try {
+        const res = await fetch(`${BACKEND_URL}/api/owner/login`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ username, password }),
+        });
+
+        const data = await res.json();
+
+        if (res.ok && data.success) {
+          messageBox.innerText = "✅ Login successful! Redirecting...";
+          messageBox.style.color = "green";
+          localStorage.setItem("ownerToken", data.token);
+          localStorage.setItem("ownerData", JSON.stringify(data.owner || {}));
+          setTimeout(() => {
+            window.location.href = "dashboard.html";
+          }, 1200);
+        } else {
+          messageBox.innerText = "❌ " + (data.message || "Login failed!");
+          messageBox.style.color = "red";
+        }
+      } catch (error) {
+        messageBox.innerText = "❌ Server error. Try again.";
+        messageBox.style.color = "red";
+        console.error(error);
+      }
+    });
+  </script>
+</body>
+</html>

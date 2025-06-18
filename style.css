@@ -1,0 +1,208 @@
+/* 🌐 Global Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f5f7fb;
+  color: #333;
+  line-height: 1.6;
+}
+
+/* 📦 Main Container */
+.container {
+  max-width: 1200px;
+  margin: auto;
+  padding: 2rem;
+  background-color: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.07);
+}
+
+/* 🧭 Heading */
+h1, h2, h3 {
+  color: #0050b3;
+  margin-bottom: 1rem;
+}
+
+/* 📊 Dashboard Grid */
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+.card {
+  background: #ffffff;
+  border-left: 5px solid #007bff;
+  padding: 1.2rem 1.5rem;
+  border-radius: 10px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  cursor: pointer;
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+}
+
+.card h3 {
+  margin-bottom: 0.6rem;
+  font-size: 1.2rem;
+  color: #222;
+}
+
+.card p {
+  font-size: 1rem;
+  color: #555;
+}
+
+/* 🛠️ Portal Controls */
+.section-title {
+  font-size: 1.3rem;
+  margin-top: 3rem;
+  margin-bottom: 1rem;
+  color: #333;
+}
+
+.portal-controls {
+  background: #f0f2f5;
+  border-radius: 8px;
+  padding: 1rem;
+  list-style-type: none;
+}
+
+.portal-controls li {
+  padding: 0.6rem 0;
+  border-bottom: 1px solid #ddd;
+  font-size: 1rem;
+}
+
+.portal-controls li:last-child {
+  border-bottom: none;
+}
+
+/* 🤖 AI Assistant Label */
+.ai-badge {
+  display: inline-block;
+  background: linear-gradient(to right, #00c6ff, #0072ff);
+  color: #fff;
+  padding: 0.3rem 0.8rem;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: bold;
+  margin-top: 0.5rem;
+}
+
+/* 💱 Currency Info */
+.currency-note {
+  font-size: 0.95rem;
+  color: #666;
+  margin-top: 1rem;
+  font-style: italic;
+}
+
+/* 📱 Responsive Footer */
+footer {
+  margin-top: 3rem;
+  text-align: center;
+  font-size: 0.85rem;
+  color: #888;
+}
+
+/* 🟢 Status Badges */
+.status-success {
+  background-color: #28a745;
+  color: #fff;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 0.8rem;
+}
+
+.status-danger {
+  background-color: #dc3545;
+  color: #fff;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 0.8rem;
+}
+
+.status-warning {
+  background-color: #ffc107;
+  color: #333;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 0.8rem;
+}
+
+/* 🔘 Toggle Switches */
+.toggle-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 0.5rem;
+}
+
+.toggle-label {
+  font-size: 0.95rem;
+  color: #333;
+}
+
+.toggle-switch {
+  position: relative;
+  width: 40px;
+  height: 20px;
+}
+
+.toggle-switch input {
+  display: none;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  background-color: #ccc;
+  border-radius: 20px;
+  width: 100%;
+  height: 100%;
+  transition: 0.3s;
+}
+
+.slider:before {
+  content: "";
+  position: absolute;
+  height: 16px;
+  width: 16px;
+  background-color: white;
+  border-radius: 50%;
+  left: 2px;
+  bottom: 2px;
+  transition: 0.3s;
+}
+
+.toggle-switch input:checked + .slider {
+  background-color: #007bff;
+}
+
+.toggle-switch input:checked + .slider:before {
+  transform: translateX(20px);
+}
+
+/* 📱 Mobile Friendly */
+@media (max-width: 600px) {
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .card {
+    padding: 1rem;
+  }
+
+  .container {
+    padding: 1rem;
+  }
+}
