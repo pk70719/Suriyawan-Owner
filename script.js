@@ -9,12 +9,12 @@ document.addEventListener("DOMContentLoaded", () => {
   loginForm.addEventListener("submit", async function (e) {
     e.preventDefault();
 
-    const username = document.getElementById("email").value.trim();
+    const email = document.getElementById("email").value.trim();
     const password = document.getElementById("password").value.trim();
     const messageBox = document.getElementById("login-message");
     const statusBox = document.getElementById("status-box");
 
-    if (!username || !password) {
+    if (!email || !password) {
       messageBox.innerText = "⚠️ Please fill all fields.";
       messageBox.style.color = "red";
       return;
@@ -30,7 +30,7 @@ document.addEventListener("DOMContentLoaded", () => {
         headers: {
           "Content-Type": "application/json"
         },
-        body: JSON.stringify({ username, password })
+        body: JSON.stringify({ email, password }) // ✅ Corrected here (was: username)
       });
 
       const data = await response.json();
