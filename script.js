@@ -10,12 +10,11 @@ document.addEventListener("DOMContentLoaded", () => {
     e.preventDefault();
 
     const email = document.getElementById("email").value.trim();
-    const password = document.getElementById("password").value.trim();
     const messageBox = document.getElementById("login-message");
     const statusBox = document.getElementById("status-box");
 
-    if (!email || !password) {
-      messageBox.innerText = "⚠️ Please fill all fields.";
+    if (!email) {
+      messageBox.innerText = "⚠️ Please enter your email.";
       messageBox.style.color = "red";
       return;
     }
@@ -30,7 +29,7 @@ document.addEventListener("DOMContentLoaded", () => {
         headers: {
           "Content-Type": "application/json"
         },
-        body: JSON.stringify({ email, password }) // ✅ Corrected here (was: username)
+        body: JSON.stringify({ username: email }) // only sending email
       });
 
       const data = await response.json();
@@ -47,7 +46,7 @@ document.addEventListener("DOMContentLoaded", () => {
           window.location.href = "dashboard.html";
         }, 1500);
       } else {
-        messageBox.innerText = data.message || "❌ अमान्य क्रेडेंशियल्स!";
+        messageBox.innerText = data.message || "❌ अमान्य यूज़र!";
         messageBox.style.color = "red";
       }
 
