@@ -2,49 +2,133 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Invoice Generator</title>
+  <title>Invoice Generator - Suriyawan Saffari</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
-    body { font-family: sans-serif; padding: 2rem; background: #fafafa; }
-    .box { max-width: 700px; margin: auto; background: white; padding: 2rem; border-radius: 10px; box-shadow: 0 0 12px rgba(0,0,0,0.1); }
-    h2 { text-align: center; margin-bottom: 1rem; color: #007bff; }
-    label { display: block; margin-top: 1rem; }
-    input { width: 100%; padding: 10px; margin-top: 5px; border-radius: 5px; border: 1px solid #ccc; }
-    button { margin-top: 1rem; background: #007bff; color: white; padding: 10px 20px; border: none; border-radius: 5px; }
-    #invoiceResult { margin-top: 2rem; padding: 1rem; border: 1px dashed #aaa; background: #f9f9f9; white-space: pre-wrap; }
+    body { font-family: sans-serif; padding: 2rem; background: #f0f2f5; }
+    .box {
+      max-width: 700px;
+      margin: auto;
+      background: white;
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.08);
+    }
+    h2 {
+      text-align: center;
+      color: #007bff;
+      margin-bottom: 1rem;
+    }
+    label { display: block; margin-top: 1rem; font-weight: bold; }
+    input {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+    button {
+      margin-top: 1.5rem;
+      padding: 12px 24px;
+      background: #007bff;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #0056b3;
+    }
+    #invoiceResult {
+      margin-top: 2rem;
+      padding: 1rem;
+      border: 1px dashed #aaa;
+      background: #f9f9f9;
+      white-space: pre-wrap;
+      border-radius: 10px;
+    }
   </style>
 </head>
 <body>
   <div class="box">
     <h2>🧾 Invoice Generator</h2>
-    <label>Product</label><input id="pname" />
-    <label>Price (₹)</label><input id="price" type="number" />
-    <label>Customer Name</label><input id="cname" />
-    <label>Date</label><input id="date" type="date" />
+
+    <label>Product</label>
+    <input id="pname" placeholder="Enter product name" />
+
+    <label>Price (₹)</label>
+    <input id="price" type="number" placeholder="Enter price" />
+
+    <label>Customer Name</label>
+    <input id="cname" placeholder="Enter customer name" />
+
+    <label>Date</label>
+    <input id="date" type="date" />
 
     <button onclick="generateInvoice()">📄 Generate Invoice</button>
-
     <div id="invoiceResult"></div>
   </div>
 
   <script>
+    const BACKEND_URL = "https://suriyawan-backend-68z3.onrender.com";
+    const token = localStorage.getItem("ownerToken");
+
     function generateInvoice() {
-      const p = document.getElementById("pname").value;
-      const pr = document.getElementById("price").value;
-      const c = document.getElementById("cname").value;
-      const d = document.getElementById("date").value;
-      const invoice = `
+      const pname = document.getElementById("pname").value.trim();
+      const price = document.getElementById("price").value.trim();
+      const cname = document.getElementById("cname").value.trim();
+      const date = document.getElementById("date").value.trim();
+
+      if (!pname || !price || !cname || !date) {
+        alert("⚠️ All fields are required.");
+        return;
+      }
+
+      if (!token) {
+        alert("❌ Unauthorized. Please login.");
+        window.location.href = "login.html";
+        return;
+      }
+
+      const invoiceData = {
+        product: pname,
+        price: parseFloat(price),
+        customer: cname,
+        date: date
+      };
+
+      fetch(`${BACKEND_URL}/api/owner/generate-invoice`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer " + token
+        },
+        body: JSON.stringify(invoiceData)
+      })
+        .then(res => res.json())
+        .then(data => {
+          if (data.success) {
+            const output = `
 🔖 Suriyawan Saffari Invoice
 -----------------------------
-Product: ${p}
-Price: ₹${pr}
-Customer: ${c}
-Date: ${d}
-Invoice ID: #INV${Math.floor(Math.random() * 1000000)}
+🛍️ Product: ${data.invoice.product}
+💰 Price: ₹${data.invoice.price}
+👤 Customer: ${data.invoice.customer}
+📅 Date: ${data.invoice.date}
+🧾 Invoice ID: ${data.invoice.invoiceId}
 -----------------------------
-Thank you for shopping with us!
-      `;
-      document.getElementById("invoiceResult").textContent = invoice;
+✅ Thank you for shopping with Suriyawan Saffari!
+            `;
+            document.getElementById("invoiceResult").textContent = output;
+          } else {
+            alert("❌ " + (data.message || "Failed to generate invoice."));
+          }
+        })
+        .catch(err => {
+          console.error("❌ Error:", err);
+          alert("❌ Server error. Try again.");
+        });
     }
   </script>
 </body>
