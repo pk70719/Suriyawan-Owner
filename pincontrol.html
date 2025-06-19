@@ -24,6 +24,7 @@
       margin: 1rem 0;
       border: 1px solid #ccc;
       border-radius: 8px;
+      font-size: 1rem;
     }
     button {
       width: 100%;
@@ -33,6 +34,8 @@
       border: none;
       border-radius: 8px;
       font-weight: bold;
+      font-size: 1rem;
+      cursor: pointer;
     }
     ul {
       margin-top: 1.5rem;
@@ -40,9 +43,9 @@
       list-style: none;
     }
     li {
-      padding: 0.5rem;
+      padding: 0.7rem;
       background: #f8f8f8;
-      margin-bottom: 5px;
+      margin-bottom: 8px;
       border-radius: 6px;
       display: flex;
       justify-content: space-between;
@@ -53,56 +56,118 @@
       padding: 5px 10px;
       border-radius: 6px;
       font-size: 0.8rem;
+      border: none;
+      color: white;
+      cursor: pointer;
+    }
+    .status {
+      text-align: center;
+      margin-top: 1rem;
+      font-weight: bold;
     }
   </style>
 </head>
 <body>
   <div class="box">
     <h2>📍 Control PIN Code Access</h2>
-    <input type="text" id="pincode" placeholder="Enter PIN code to activate" />
-    <button onclick="addPIN()">Activate</button>
-
+    <input type="text" id="pincode" placeholder="Enter PIN code to activate" maxlength="6" />
+    <button onclick="addPIN()">✅ Activate PIN Code</button>
+    <div class="status" id="statusBox">Loading available PIN codes...</div>
     <ul id="pinList"></ul>
   </div>
 
   <script>
     const token = localStorage.getItem("ownerToken");
+    const BACKEND_URL = "https://suriyawan-backend-68z3.onrender.com";
+    const statusBox = document.getElementById("statusBox");
+
+    if (!token) {
+      alert("❌ Unauthorized access. Please login first.");
+      window.location.href = "login.html";
+    }
 
     function fetchPins() {
-      fetch("https://suriyawan-backend-68z3.onrender.com/api/owner/pincode", {
-        headers: { "Authorization": "Bearer " + token }
+      fetch(`${BACKEND_URL}/api/owner/pincode`, {
+        headers: { Authorization: "Bearer " + token }
       })
-      .then(res => res.json())
-      .then(data => {
-        const list = document.getElementById("pinList");
-        list.innerHTML = "";
-        data.pins.forEach(pin => {
-          const li = document.createElement("li");
-          li.innerHTML = `${pin} <button onclick="removePIN('${pin}')">Remove</button>`;
-          list.appendChild(li);
+        .then(res => res.json())
+        .then(data => {
+          const list = document.getElementById("pinList");
+          list.innerHTML = "";
+          if (data.success && data.pins.length > 0) {
+            data.pins.forEach(pin => {
+              const li = document.createElement("li");
+              li.innerHTML = `${pin} <button onclick="removePIN('${pin}')">❌ Remove</button>`;
+              list.appendChild(li);
+            });
+            statusBox.innerText = "✅ PIN codes loaded.";
+            statusBox.style.color = "green";
+          } else {
+            statusBox.innerText = "⚠️ No PIN codes found.";
+            statusBox.style.color = "#ff9900";
+          }
+        })
+        .catch(() => {
+          statusBox.innerText = "❌ Failed to fetch PINs.";
+          statusBox.style.color = "red";
         });
-      });
     }
 
     function addPIN() {
-      const pin = document.getElementById("pincode").value;
-      fetch("https://suriyawan-backend-68z3.onrender.com/api/owner/pincode", {
+      const pin = document.getElementById("pincode").value.trim();
+      if (!/^\d{6}$/.test(pin)) {
+        statusBox.innerText = "⚠️ Enter a valid 6-digit PIN.";
+        statusBox.style.color = "red";
+        return;
+      }
+
+      fetch(`${BACKEND_URL}/api/owner/pincode`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": "Bearer " + token
+          Authorization: "Bearer " + token
         },
         body: JSON.stringify({ pin })
-      }).then(() => fetchPins());
+      })
+        .then(res => res.json())
+        .then(data => {
+          if (data.success) {
+            statusBox.innerText = `✅ PIN ${pin} activated successfully.`;
+            statusBox.style.color = "green";
+            document.getElementById("pincode").value = "";
+            fetchPins();
+          } else {
+            statusBox.innerText = "❌ " + (data.message || "Failed to activate PIN.");
+            statusBox.style.color = "red";
+          }
+        })
+        .catch(() => {
+          statusBox.innerText = "❌ Server error while adding PIN.";
+          statusBox.style.color = "red";
+        });
     }
 
     function removePIN(pin) {
-      fetch(`https://suriyawan-backend-68z3.onrender.com/api/owner/pincode/${pin}`, {
+      if (!confirm(`Remove PIN ${pin}?`)) return;
+      fetch(`${BACKEND_URL}/api/owner/pincode/${pin}`, {
         method: "DELETE",
-        headers: {
-          "Authorization": "Bearer " + token
-        }
-      }).then(() => fetchPins());
+        headers: { Authorization: "Bearer " + token }
+      })
+        .then(res => res.json())
+        .then(data => {
+          if (data.success) {
+            statusBox.innerText = `❌ PIN ${pin} deactivated.`;
+            statusBox.style.color = "orange";
+            fetchPins();
+          } else {
+            statusBox.innerText = "⚠️ Failed to remove PIN.";
+            statusBox.style.color = "red";
+          }
+        })
+        .catch(() => {
+          statusBox.innerText = "❌ Server error while removing PIN.";
+          statusBox.style.color = "red";
+        });
     }
 
     window.onload = fetchPins;
