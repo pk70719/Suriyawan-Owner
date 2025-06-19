@@ -1,7 +1,10 @@
 document.addEventListener("DOMContentLoaded", () => {
   const loginForm = document.getElementById("login-form");
 
-  if (!loginForm) return;
+  if (!loginForm) {
+    console.error("❌ Login form not found!");
+    return;
+  }
 
   loginForm.addEventListener("submit", async function (e) {
     e.preventDefault();
@@ -11,7 +14,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const statusBox = document.getElementById("status-box");
 
     if (!username) {
-      messageBox.innerText = "⚠️ Username required";
+      messageBox.innerText = "⚠️ Please enter your email.";
       messageBox.style.color = "red";
       return;
     }
@@ -23,13 +26,18 @@ document.addEventListener("DOMContentLoaded", () => {
     try {
       const response = await fetch("https://suriyawan-backend-68z3.onrender.com/api/owner/login", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username })  // ❌ no password
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ username })
       });
 
       const data = await response.json();
 
       if (response.ok && data.success) {
+        messageBox.innerText = data.message || "✅ लॉगिन सफल!";
+        messageBox.style.color = "green";
+
         localStorage.setItem("ownerToken", data.token);
         localStorage.setItem("ownerData", JSON.stringify(data.owner || {}));
 
@@ -38,12 +46,13 @@ document.addEventListener("DOMContentLoaded", () => {
           window.location.href = "dashboard.html";
         }, 1500);
       } else {
-        messageBox.innerText = data.message || "❌ Login failed!";
+        messageBox.innerText = data.message || "❌ अमान्य ईमेल!";
         messageBox.style.color = "red";
       }
 
     } catch (error) {
-      messageBox.innerText = "❌ Server error!";
+      console.error("Login error:", error);
+      messageBox.innerText = "❌ Server error. Please try again later.";
       messageBox.style.color = "red";
     } finally {
       submitButton.disabled = false;
