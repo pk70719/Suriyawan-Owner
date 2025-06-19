@@ -69,7 +69,7 @@
     const token = localStorage.getItem("ownerToken");
 
     function fetchPins() {
-      fetch("https://suriyawan-backend-18.onrender.com/api/owner/pincode", {
+      fetch("https://suriyawan-backend-68z3.onrender.com/api/owner/pincode", {
         headers: { "Authorization": "Bearer " + token }
       })
       .then(res => res.json())
@@ -86,7 +86,7 @@
 
     function addPIN() {
       const pin = document.getElementById("pincode").value;
-      fetch("https://suriyawan-backend-18.onrender.com/api/owner/pincode", {
+      fetch("https://suriyawan-backend-68z3.onrender.com/api/owner/pincode", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -97,7 +97,7 @@
     }
 
     function removePIN(pin) {
-      fetch(`https://suriyawan-backend-18.onrender.com/api/owner/pincode/${pin}`, {
+      fetch(`https://suriyawan-backend-68z3.onrender.com/api/owner/pincode/${pin}`, {
         method: "DELETE",
         headers: {
           "Authorization": "Bearer " + token
