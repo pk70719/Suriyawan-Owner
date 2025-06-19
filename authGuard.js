@@ -10,7 +10,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // Verify token with backend
-  fetch("https://suriyawan-backend-18.onrender.com/api/owner/verify", {
+  fetch("https://suriyawan-backend-68z3.onrender.com/api/owner/verify", {
     method: "GET",
     headers: {
       "Authorization": `Bearer ${token}`
