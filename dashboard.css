@@ -1,15 +1,28 @@
-/* 🧠 Universal reset & base styling */
+/* 🌐 Root variables for easy color control */
+:root {
+  --primary-color: #0050b3;
+  --secondary-color: #1890ff;
+  --bg-light: #f2f4f8;
+  --card-bg: #fafafa;
+  --text-dark: #222;
+  --text-medium: #444;
+  --text-light: #888;
+  --shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* 🧠 Reset & base styles */
 * {
-  box-sizing: border-box;
   margin: 0;
   padding: 0;
+  box-sizing: border-box;
   font-family: 'Roboto', sans-serif;
 }
 
 body {
-  background-color: #f2f4f8;
-  color: #333;
+  background-color: var(--bg-light);
+  color: var(--text-dark);
   padding: 2rem;
+  line-height: 1.5;
 }
 
 .dashboard {
@@ -18,18 +31,18 @@ body {
   background: white;
   border-radius: 12px;
   padding: 2rem;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow);
 }
 
 /* 🔷 Header */
 h1 {
   font-size: 2.2rem;
-  color: #0050b3;
+  color: var(--primary-color);
   margin-bottom: 1.5rem;
   text-align: center;
 }
 
-/* 📊 Grid for stats */
+/* 📊 Stats Grid */
 .stats {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
@@ -37,10 +50,10 @@ h1 {
   margin-top: 2rem;
 }
 
-/* 📦 Card style for each data unit */
+/* 📦 Card */
 .card {
-  background: #fafafa;
-  border-left: 6px solid #1890ff;
+  background: var(--card-bg);
+  border-left: 6px solid var(--secondary-color);
   border-radius: 10px;
   padding: 1.2rem 1.5rem;
   transition: all 0.3s ease;
@@ -54,23 +67,23 @@ h1 {
 .card h2 {
   font-size: 1.4rem;
   margin-bottom: 0.5rem;
-  color: #222;
+  color: var(--text-dark);
 }
 
 .card p {
   font-size: 1.2rem;
-  color: #444;
+  color: var(--text-medium);
 }
 
-/* 🧠 Additional section for tool/apps log */
+/* 🔧 Tools / Apps Section */
 .section-title {
   font-size: 1.3rem;
-  color: #0050b3;
+  color: var(--primary-color);
   margin-top: 2.5rem;
   margin-bottom: 1rem;
 }
 
-/* ⚙️ Control list */
+/* ⚙️ Control List */
 .control-list {
   list-style: none;
   background: #f5f5f5;
@@ -90,7 +103,7 @@ h1 {
   border-bottom: none;
 }
 
-/* 🤖 AI assistant badge */
+/* 🤖 AI Status Badge */
 .ai-status {
   display: inline-block;
   padding: 0.3rem 0.7rem;
@@ -102,7 +115,7 @@ h1 {
   margin-top: 0.5rem;
 }
 
-/* 💱 Currency and dynamic info */
+/* 💱 Info Line */
 .info-line {
   font-size: 1rem;
   color: #222;
@@ -110,10 +123,29 @@ h1 {
   font-style: italic;
 }
 
-/* 📱 Responsive footer */
+/* 📱 Footer */
 footer {
   margin-top: 4rem;
   text-align: center;
-  color: #888;
+  color: var(--text-light);
   font-size: 0.9rem;
+}
+
+/* 📱 Responsive tweaks */
+@media (max-width: 600px) {
+  h1 {
+    font-size: 1.6rem;
+  }
+
+  .card h2 {
+    font-size: 1.2rem;
+  }
+
+  .card p {
+    font-size: 1rem;
+  }
+
+  .dashboard {
+    padding: 1rem;
+  }
 }
