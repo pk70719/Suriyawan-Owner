@@ -1,5 +1,6 @@
 // login.js
 document.addEventListener("DOMContentLoaded", () => {
+  const BACKEND_URL = "https://suriyawan-backend-68z3.onrender.com";
   const loginForm = document.getElementById("login-form");
 
   if (!loginForm) {
@@ -15,17 +16,17 @@ document.addEventListener("DOMContentLoaded", () => {
     const statusBox = document.getElementById("status-box");
 
     if (!username) {
-      messageBox.innerText = "⚠️ Please enter your email.";
+      messageBox.innerText = "⚠️ कृपया ईमेल डालें।";
       messageBox.style.color = "red";
       return;
     }
 
     const submitButton = loginForm.querySelector("button[type='submit']");
     submitButton.disabled = true;
-    submitButton.innerText = "⏳ Logging in...";
+    submitButton.innerText = "⏳ लॉगिन हो रहा है...";
 
     try {
-      const response = await fetch("https://suriyawan-backend-68z3.onrender.com/api/owner/login", {
+      const response = await fetch(`${BACKEND_URL}/api/owner/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
@@ -39,21 +40,22 @@ document.addEventListener("DOMContentLoaded", () => {
         messageBox.innerText = data.message || "✅ लॉगिन सफल!";
         messageBox.style.color = "green";
 
+        // Store session
         localStorage.setItem("ownerToken", data.token);
         localStorage.setItem("ownerData", JSON.stringify(data.owner || {}));
 
-        statusBox.innerText = "✅ Login successful. Redirecting...";
+        statusBox.innerText = "🔁 Redirecting...";
         setTimeout(() => {
           window.location.href = "dashboard.html";
         }, 1500);
       } else {
-        messageBox.innerText = data.message || "❌ अमान्य ईमेल!";
+        messageBox.innerText = data.message || "❌ अमान्य लॉगिन!";
         messageBox.style.color = "red";
       }
 
     } catch (error) {
       console.error("Login error:", error);
-      messageBox.innerText = "❌ Server error. Please try again later.";
+      messageBox.innerText = "❌ सर्वर से कनेक्ट नहीं हो सका।";
       messageBox.style.color = "red";
     } finally {
       submitButton.disabled = false;
