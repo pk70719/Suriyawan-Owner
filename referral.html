@@ -12,6 +12,7 @@
     input, select { width: 100%; padding: 10px; margin-bottom: 1rem; border-radius: 6px; border: 1px solid #ccc; }
     button { background: #28a745; color: white; padding: 10px 20px; border: none; border-radius: 6px; cursor: pointer; }
     button:hover { background: #218838; }
+    .status { margin-top: 10px; color: green; font-weight: bold; text-align: center; }
   </style>
 </head>
 <body>
@@ -30,18 +31,42 @@
     </select>
 
     <button onclick="saveReferral()">✅ Save Settings</button>
+    <div class="status" id="messageBox"></div>
   </div>
 
   <script>
     const token = localStorage.getItem("ownerToken");
-    if (!token) { alert("Please login first"); location.href = "login.html"; }
+    const baseURL = "https://suriyawan-backend-68z3.onrender.com";
+    const messageBox = document.getElementById("messageBox");
+
+    if (!token) {
+      alert("Please login first");
+      location.href = "login.html";
+    }
+
+    // Fetch current settings on page load
+    fetch(`${baseURL}/api/owner/referral`, {
+      headers: { Authorization: "Bearer " + token }
+    })
+    .then(res => res.json())
+    .then(data => {
+      if (data.success && data.settings) {
+        document.getElementById("reward").value = data.settings.reward;
+        document.getElementById("limit").value = data.settings.limit;
+        document.getElementById("status").value = data.settings.status;
+      }
+    })
+    .catch(() => {
+      messageBox.style.color = "red";
+      messageBox.innerText = "❌ Failed to load referral settings.";
+    });
 
     function saveReferral() {
       const reward = document.getElementById("reward").value;
       const limit = document.getElementById("limit").value;
       const status = document.getElementById("status").value;
 
-      fetch("https://suriyawan-backend-68z3.onrender.com/api/owner/referral", {
+      fetch(`${baseURL}/api/owner/referral`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -51,9 +76,13 @@
       })
       .then(res => res.json())
       .then(data => {
-        alert(data.message || "✅ Referral settings saved");
+        messageBox.style.color = "green";
+        messageBox.innerText = data.message || "✅ Referral settings saved.";
       })
-      .catch(() => alert("❌ Failed to save referral settings"));
+      .catch(() => {
+        messageBox.style.color = "red";
+        messageBox.innerText = "❌ Failed to save referral settings.";
+      });
     }
   </script>
 </body>
