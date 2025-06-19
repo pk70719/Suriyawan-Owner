@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
-  const BACKEND_URL = 'https://suriyawan-backend-18.onrender.com'; // ✅ Backend URL
+  const BACKEND_URL = 'https://suriyawan-backend-68z3.onrender.com'; // ✅ Backend URL
 
   const token = localStorage.getItem("ownerToken");
 
