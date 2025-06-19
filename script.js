@@ -1,3 +1,4 @@
+// Suriyawan-Owner/script.js
 document.addEventListener("DOMContentLoaded", () => {
   const loginForm = document.getElementById("login-form");
 
@@ -6,22 +7,24 @@ document.addEventListener("DOMContentLoaded", () => {
     return;
   }
 
-  loginForm.addEventListener("submit", async function (e) {
+  loginForm.addEventListener("submit", async (e) => {
     e.preventDefault();
 
-    const email = document.getElementById("email").value.trim();
+    const emailInput = document.getElementById("email");
     const messageBox = document.getElementById("login-message");
     const statusBox = document.getElementById("status-box");
+    const submitButton = loginForm.querySelector("button[type='submit']");
+
+    const email = emailInput.value.trim();
 
     if (!email) {
-      messageBox.innerText = "⚠️ Please enter your email.";
+      messageBox.innerText = "⚠️ कृपया ईमेल दर्ज करें।";
       messageBox.style.color = "red";
       return;
     }
 
-    const submitButton = loginForm.querySelector("button[type='submit']");
     submitButton.disabled = true;
-    submitButton.innerText = "⏳ Logging in...";
+    submitButton.innerText = "⏳ लॉगिन हो रहा है...";
 
     try {
       const response = await fetch("https://suriyawan-backend-68z3.onrender.com/api/owner/login", {
@@ -29,30 +32,31 @@ document.addEventListener("DOMContentLoaded", () => {
         headers: {
           "Content-Type": "application/json"
         },
-        body: JSON.stringify({ username: email }) // only sending email
+        body: JSON.stringify({ username: email })
       });
 
       const data = await response.json();
 
-      if (response.ok && data.success) {
+      if (response.ok && data.success && data.token) {
         messageBox.innerText = data.message || "✅ लॉगिन सफल!";
         messageBox.style.color = "green";
 
+        // 🔐 Store secure login data
         localStorage.setItem("ownerToken", data.token);
         localStorage.setItem("ownerData", JSON.stringify(data.owner || {}));
 
-        statusBox.innerText = "✅ Login successful. Redirecting...";
+        statusBox.innerText = "✅ लॉगिन सफल। डैशबोर्ड पर जा रहे हैं...";
         setTimeout(() => {
           window.location.href = "dashboard.html";
         }, 1500);
       } else {
-        messageBox.innerText = data.message || "❌ अमान्य यूज़र!";
+        messageBox.innerText = data.message || "❌ अमान्य ईमेल!";
         messageBox.style.color = "red";
       }
 
-    } catch (error) {
-      console.error("Login error:", error);
-      messageBox.innerText = "❌ Server error. Please try again later.";
+    } catch (err) {
+      console.error("❌ Server error during login:", err);
+      messageBox.innerText = "❌ सर्वर त्रुटि। कृपया बाद में पुनः प्रयास करें।";
       messageBox.style.color = "red";
     } finally {
       submitButton.disabled = false;
