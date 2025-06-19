@@ -23,7 +23,7 @@
     const token = localStorage.getItem("ownerToken");
     if (!token) { alert("Please login first"); location.href = "login.html"; }
 
-    fetch("https://suriyawan-backend-18.onrender.com/api/owner/logs", {
+    fetch("https://suriyawan-backend-68z3.onrender.com/api/owner/logs", {
       headers: { Authorization: "Bearer " + token }
     })
     .then(res => res.json())
