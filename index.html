@@ -12,61 +12,79 @@
       padding: 0;
       font-family: 'Roboto', sans-serif;
     }
+
     body {
       background-color: #eef3f8;
-      text-align: center;
-      padding: 50px 20px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
     }
+
     .login-box {
       background: white;
-      padding: 30px;
-      border-radius: 12px;
+      padding: 30px 25px;
+      border-radius: 14px;
       box-shadow: 0 0 25px rgba(0,0,0,0.08);
-      display: inline-block;
       max-width: 400px;
       width: 100%;
     }
-    .login-box h2 {
+
+    h2 {
       margin-bottom: 20px;
       color: #0050b3;
+      text-align: center;
     }
+
     .user-box {
-      margin-bottom: 15px;
+      margin-bottom: 18px;
+    }
+
+    label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 5px;
       text-align: left;
     }
-    .user-box label {
-      font-weight: 600;
-    }
-    .user-box input {
+
+    input {
       width: 100%;
-      padding: 10px;
+      padding: 12px;
       font-size: 16px;
-      margin-top: 5px;
       border: 1px solid #ccc;
       border-radius: 8px;
     }
+
     button {
-      padding: 10px 25px;
+      width: 100%;
+      padding: 12px;
       background-color: #0070f3;
       color: white;
       border: none;
       border-radius: 8px;
       cursor: pointer;
       font-size: 16px;
+      margin-top: 10px;
       transition: background 0.3s ease;
     }
+
     button:hover {
       background-color: #005ac1;
     }
-    #status-box {
-      margin-top: 20px;
-      font-weight: bold;
-      color: #555;
-    }
+
     #login-message {
-      margin-top: 10px;
+      margin-top: 15px;
       font-size: 15px;
       font-weight: bold;
+      text-align: center;
+    }
+
+    #status-box {
+      margin-top: 15px;
+      text-align: center;
+      font-size: 14px;
+      color: #888;
     }
   </style>
 </head>
@@ -82,27 +100,26 @@
         <label>Password</label>
         <input type="password" id="password" placeholder="Enter Password" required />
       </div>
-      <button type="submit">Login</button>
+      <button type="submit">🔐 Login</button>
     </form>
     <p id="login-message"></p>
+    <div id="status-box">🔄 Connecting to Suriyawan Backend...</div>
   </div>
-
-  <div id="status-box">🔄 Connecting to Suriyawan Backend...</div>
 
   <script>
     const BACKEND_URL = "https://suriyawan-backend-68z3.onrender.com";
 
-    // ✅ Backend connectivity check
+    // ✅ Ping backend to confirm server is live
     fetch(`${BACKEND_URL}/api/owner/ping`)
       .then(res => res.json())
-      .then(data => {
-        document.getElementById('status-box').innerText = "✅ Backend connected successfully!";
+      .then(() => {
+        document.getElementById('status-box').textContent = "✅ Backend connected successfully!";
       })
       .catch(() => {
-        document.getElementById('status-box').innerText = "❌ Failed to connect to backend.";
+        document.getElementById('status-box').textContent = "❌ Failed to connect to backend.";
       });
 
-    // ✅ Login functionality
+    // ✅ Owner login functionality
     document.getElementById("login-form").addEventListener("submit", async function (e) {
       e.preventDefault();
       const username = document.getElementById("username").value.trim();
@@ -110,7 +127,7 @@
       const messageBox = document.getElementById("login-message");
 
       if (!username || !password) {
-        messageBox.innerText = "⚠️ Both fields are required!";
+        messageBox.textContent = "⚠️ Username and password are required!";
         messageBox.style.color = "red";
         return;
       }
@@ -125,21 +142,20 @@
         const data = await res.json();
 
         if (res.ok && data.success) {
-          messageBox.innerText = "✅ Login successful! Redirecting...";
+          messageBox.textContent = "✅ Login successful! Redirecting...";
           messageBox.style.color = "green";
           localStorage.setItem("ownerToken", data.token);
-          localStorage.setItem("ownerData", JSON.stringify(data.owner || {}));
           setTimeout(() => {
             window.location.href = "dashboard.html";
-          }, 1200);
+          }, 1000);
         } else {
-          messageBox.innerText = "❌ " + (data.message || "Login failed!");
+          messageBox.textContent = "❌ " + (data.message || "Login failed!");
           messageBox.style.color = "red";
         }
       } catch (error) {
-        messageBox.innerText = "❌ Server error. Try again.";
+        console.error("❌ Login error:", error);
+        messageBox.textContent = "❌ Server error. Try again.";
         messageBox.style.color = "red";
-        console.error(error);
       }
     });
   </script>
