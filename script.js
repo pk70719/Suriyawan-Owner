@@ -14,7 +14,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const messageBox = document.getElementById("login-message");
     const statusBox = document.getElementById("status-box");
 
-    // 🔒 Field validation
     if (!username || !password) {
       messageBox.innerText = "⚠️ Please fill all fields.";
       messageBox.style.color = "red";
@@ -26,7 +25,7 @@ document.addEventListener("DOMContentLoaded", () => {
     submitButton.innerText = "⏳ Logging in...";
 
     try {
-      const response = await fetch("https://suriyawan-backend-68z3.onrender.com", {
+      const response = await fetch("https://suriyawan-backend-68z3.onrender.com/api/owner/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
@@ -37,11 +36,9 @@ document.addEventListener("DOMContentLoaded", () => {
       const data = await response.json();
 
       if (response.ok && data.success) {
-        // ✅ Login success
-        messageBox.innerText = data.message || "Login successful!";
+        messageBox.innerText = data.message || "✅ लॉगिन सफल!";
         messageBox.style.color = "green";
 
-        // 💾 Store token securely (OWNER only)
         localStorage.setItem("ownerToken", data.token);
         localStorage.setItem("ownerData", JSON.stringify(data.owner || {}));
 
@@ -50,8 +47,7 @@ document.addEventListener("DOMContentLoaded", () => {
           window.location.href = "dashboard.html";
         }, 1500);
       } else {
-        // ❌ Login failed (even with 200 OK)
-        messageBox.innerText = data.message || "❌ Invalid credentials.";
+        messageBox.innerText = data.message || "❌ अमान्य क्रेडेंशियल्स!";
         messageBox.style.color = "red";
       }
 
