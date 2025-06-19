@@ -2,43 +2,92 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Activity Logs - Suriyawan Saffari</title>
+  <title>📜 Activity Logs - Suriyawan Saffari</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     body { font-family: Arial, sans-serif; background: #eef0f3; padding: 20px; }
-    .container { max-width: 800px; margin: auto; background: white; padding: 1.5rem; border-radius: 10px; box-shadow: 0 0 8px rgba(0,0,0,0.1); }
-    h2 { text-align: center; margin-bottom: 1rem; color: #222; }
-    ul { list-style: none; padding: 0; }
-    li { padding: 10px; border-bottom: 1px solid #ddd; }
-    .time { font-size: 0.8rem; color: gray; }
+    .container {
+      max-width: 850px;
+      margin: auto;
+      background: white;
+      padding: 1.5rem;
+      border-radius: 10px;
+      box-shadow: 0 0 8px rgba(0,0,0,0.1);
+    }
+    h2 {
+      text-align: center;
+      margin-bottom: 1rem;
+      color: #222;
+    }
+    ul { list-style: none; padding: 0; margin-top: 1rem; }
+    li {
+      padding: 10px;
+      border-bottom: 1px solid #ddd;
+      font-size: 1rem;
+    }
+    .time {
+      font-size: 0.85rem;
+      color: #666;
+      margin-top: 4px;
+    }
+    #status {
+      text-align: center;
+      margin-top: 10px;
+      font-size: 0.9rem;
+      color: green;
+    }
   </style>
 </head>
 <body>
   <div class="container">
-    <h2>📜 Activity Logs</h2>
+    <h2>📜 Owner Activity Logs</h2>
+    <div id="status">⏳ Fetching logs securely...</div>
     <ul id="logsList"><li>Loading...</li></ul>
   </div>
 
   <script>
+    const BACKEND_URL = "https://suriyawan-backend-68z3.onrender.com";
     const token = localStorage.getItem("ownerToken");
-    if (!token) { alert("Please login first"); location.href = "login.html"; }
 
-    fetch("https://suriyawan-backend-68z3.onrender.com/api/owner/logs", {
-      headers: { Authorization: "Bearer " + token }
-    })
-    .then(res => res.json())
-    .then(data => {
-      const list = document.getElementById("logsList");
-      list.innerHTML = "";
-      data.logs.forEach(log => {
-        const li = document.createElement("li");
-        li.innerHTML = `<b>${log.action}</b><div class="time">${log.time}</div>`;
-        list.appendChild(li);
+    const list = document.getElementById("logsList");
+    const status = document.getElementById("status");
+
+    if (!token) {
+      alert("❌ Unauthorized access. Please login.");
+      window.location.href = "login.html";
+    } else {
+      fetch(`${BACKEND_URL}/api/owner/logs`, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      })
+      .then(res => res.json())
+      .then(data => {
+        list.innerHTML = "";
+        if (data.success && Array.isArray(data.logs)) {
+          if (data.logs.length === 0) {
+            list.innerHTML = "<li>⚠️ No logs found yet.</li>";
+          } else {
+            data.logs.forEach(log => {
+              const li = document.createElement("li");
+              li.innerHTML = `<b>✅ ${log.action}</b><div class="time">🕒 ${new Date(log.time).toLocaleString()}</div>`;
+              list.appendChild(li);
+            });
+            status.innerText = "✅ Logs loaded successfully.";
+          }
+        } else {
+          list.innerHTML = "<li>❌ No logs found or invalid response.</li>";
+          status.style.color = "red";
+          status.innerText = "⚠️ Logs fetch failed.";
+        }
+      })
+      .catch(err => {
+        console.error("Log Fetch Error:", err);
+        list.innerHTML = "<li>❌ Server error while loading logs.</li>";
+        status.style.color = "red";
+        status.innerText = "❌ Server error.";
       });
-    })
-    .catch(() => {
-      document.getElementById("logsList").innerHTML = "<li>❌ Unable to load logs</li>";
-    });
+    }
   </script>
 </body>
 </html>
