@@ -2,47 +2,135 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Parcel Label Generator</title>
+  <title>Parcel Label Generator - Suriyawan</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
-    body { font-family: Arial, sans-serif; padding: 2rem; background: #f0f2f5; }
-    .wrapper { max-width: 600px; margin: auto; background: #fff; padding: 2rem; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
-    label { display: block; margin-top: 1rem; }
-    input, textarea { width: 100%; padding: 10px; margin-top: 5px; border: 1px solid #ccc; border-radius: 6px; }
-    button { margin-top: 1.5rem; background: #007bff; color: white; padding: 10px 20px; border: none; border-radius: 6px; cursor: pointer; }
-    #output { margin-top: 2rem; padding: 1rem; background: #fefefe; border: 1px dashed #999; text-align: center; }
+    body { font-family: Arial, sans-serif; background: #f0f2f5; padding: 2rem; }
+    .wrapper {
+      max-width: 600px;
+      margin: auto;
+      background: white;
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.1);
+    }
+    h2 { text-align: center; color: #007bff; }
+    label { margin-top: 1rem; display: block; font-weight: bold; }
+    input, textarea {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+    button {
+      margin-top: 1.5rem;
+      background: #007bff;
+      color: white;
+      padding: 12px 24px;
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    button:hover { background: #0056b3; }
+    #output {
+      margin-top: 2rem;
+      padding: 1.5rem;
+      background: #f9f9f9;
+      border: 1px dashed #888;
+      border-radius: 10px;
+      text-align: center;
+    }
+    canvas {
+      margin-top: 10px;
+    }
   </style>
 </head>
 <body>
   <div class="wrapper">
     <h2>🚚 Parcel Label Generator</h2>
 
-    <label>Sender Name</label><input id="sender" />
-    <label>Recipient Name</label><input id="recipient" />
-    <label>Address</label><textarea id="address" rows="3"></textarea>
-    <label>Contact No.</label><input id="contact" />
+    <label>Sender Name</label>
+    <input id="sender" placeholder="Enter sender's name" />
 
-    <button onclick="generateLabel()">Generate Label</button>
+    <label>Recipient Name</label>
+    <input id="recipient" placeholder="Enter recipient's name" />
+
+    <label>Full Address</label>
+    <textarea id="address" rows="3" placeholder="Enter full address"></textarea>
+
+    <label>Contact Number</label>
+    <input id="contact" placeholder="Enter contact number" />
+
+    <button onclick="generateLabel()">📦 Generate Label</button>
 
     <div id="output"></div>
   </div>
 
-  <script>
-    function generateLabel() {
-      const sender = document.getElementById("sender").value;
-      const recipient = document.getElementById("recipient").value;
-      const address = document.getElementById("address").value;
-      const contact = document.getElementById("contact").value;
-      const tid = "TRK" + Math.floor(Math.random() * 10000000);
+  <!-- JsBarcode for Barcode -->
+  <script src="https://cdn.jsdelivr.net/jsbarcode/3.11.5/JsBarcode.all.min.js"></script>
 
-      document.getElementById("output").innerHTML = `
-        <b>Suriyawan Saffari Parcel Label</b><hr>
-        From: ${sender}<br>
-        To: ${recipient}<br>
-        Address: ${address}<br>
-        Contact: ${contact}<br><br>
-        <b>Tracking ID: ${tid}</b>
-      `;
+  <script>
+    const BACKEND_URL = "https://suriyawan-backend-68z3.onrender.com";
+    const token = localStorage.getItem("ownerToken");
+
+    function generateLabel() {
+      const sender = document.getElementById("sender").value.trim();
+      const recipient = document.getElementById("recipient").value.trim();
+      const address = document.getElementById("address").value.trim();
+      const contact = document.getElementById("contact").value.trim();
+
+      if (!sender || !recipient || !address || !contact) {
+        alert("⚠️ All fields are required.");
+        return;
+      }
+
+      if (!token) {
+        alert("❌ Please login first.");
+        window.location.href = "login.html";
+        return;
+      }
+
+      const labelData = { sender, recipient, address, contact };
+
+      fetch(`${BACKEND_URL}/api/owner/create-label`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer " + token
+        },
+        body: JSON.stringify(labelData)
+      })
+        .then(res => res.json())
+        .then(data => {
+          if (data.success) {
+            const output = `
+              <h3>📦 Suriyawan Parcel Label</h3>
+              <p><strong>From:</strong> ${sender}</p>
+              <p><strong>To:</strong> ${recipient}</p>
+              <p><strong>Address:</strong><br>${address.replace(/\n/g, "<br>")}</p>
+              <p><strong>Contact:</strong> ${contact}</p>
+              <p><strong>Tracking ID:</strong> ${data.trackingId}</p>
+              <svg id="barcode"></svg>
+            `;
+            document.getElementById("output").innerHTML = output;
+
+            JsBarcode("#barcode", data.trackingId, {
+              format: "CODE128",
+              lineColor: "#000",
+              width: 2,
+              height: 50,
+              displayValue: true
+            });
+          } else {
+            alert("❌ " + (data.message || "Failed to generate label."));
+          }
+        })
+        .catch(err => {
+          console.error("❌ Label Error:", err);
+          alert("⚠️ Server error.");
+        });
     }
   </script>
 </body>
