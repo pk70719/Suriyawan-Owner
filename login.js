@@ -7,7 +7,7 @@ document.getElementById("login-form").addEventListener("submit", async (e) => {
   const statusBox = document.getElementById("status-box");
 
   try {
-    const response = await fetch("https://suriyawan-backend-18.onrender.com/api/owner/login", {
+    const response = await fetch("https://suriyawan-backend-68z3.onrender.com/api/owner/login", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
