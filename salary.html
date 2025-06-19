@@ -67,7 +67,7 @@
     function updateSalary() {
       const salary = document.getElementById("salary").value;
 
-      fetch("https://suriyawan-backend-18.onrender.com/api/owner/update-salary", {
+      fetch("https://suriyawan-backend-68z3.onrender.com/api/owner/update-salary", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -86,7 +86,7 @@
     }
 
     window.onload = () => {
-      fetch("https://suriyawan-backend-18.onrender.com/api/owner/delivery-salary", {
+      fetch("https://suriyawan-backend-68z3.onrender.com/api/owner/delivery-salary", {
         headers: { "Authorization": "Bearer " + token }
       })
       .then(res => res.json())
