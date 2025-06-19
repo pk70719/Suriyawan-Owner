@@ -31,6 +31,7 @@
       padding: 10px;
       border-radius: 6px;
       border: 1px solid #ccc;
+      margin-top: 5px;
     }
     button {
       margin-top: 1.5rem;
@@ -41,6 +42,7 @@
       border: none;
       border-radius: 6px;
       cursor: pointer;
+      font-weight: bold;
     }
     button:hover {
       background: #0056b3;
@@ -57,17 +59,30 @@
     <h2>💰 Set Delivery Boy Salary (₹/order)</h2>
     <label for="salary">Enter Amount (e.g. 20)</label>
     <input type="number" id="salary" min="0" placeholder="Enter new salary per order" />
-    <button onclick="updateSalary()">Update Salary</button>
+    <button onclick="updateSalary()">✅ Update Salary</button>
     <div class="msg" id="messageBox"></div>
   </div>
 
   <script>
     const token = localStorage.getItem("ownerToken");
+    const baseURL = "https://suriyawan-backend-68z3.onrender.com";
+
+    if (!token) {
+      alert("Please login first.");
+      window.location.href = "login.html";
+    }
 
     function updateSalary() {
       const salary = document.getElementById("salary").value;
+      const msg = document.getElementById("messageBox");
 
-      fetch("https://suriyawan-backend-68z3.onrender.com/api/owner/update-salary", {
+      if (!salary || salary < 0) {
+        msg.style.color = "red";
+        msg.innerText = "⚠️ Please enter a valid amount.";
+        return;
+      }
+
+      fetch(`${baseURL}/api/owner/update-salary`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -77,23 +92,38 @@
       })
       .then(res => res.json())
       .then(data => {
-        document.getElementById("messageBox").innerText = data.message || "Updated!";
+        msg.style.color = "green";
+        msg.innerText = data.message || "✅ Salary updated successfully!";
       })
       .catch(err => {
+        msg.style.color = "red";
+        msg.innerText = "❌ Failed to update salary.";
         console.error(err);
-        document.getElementById("messageBox").innerText = "Failed to update!";
       });
     }
 
     window.onload = () => {
-      fetch("https://suriyawan-backend-68z3.onrender.com/api/owner/delivery-salary", {
-        headers: { "Authorization": "Bearer " + token }
+      const msg = document.getElementById("messageBox");
+
+      fetch(`${baseURL}/api/owner/delivery-salary`, {
+        headers: {
+          "Authorization": "Bearer " + token
+        }
       })
       .then(res => res.json())
       .then(data => {
-        if (data.amount) {
+        if (data.amount !== undefined) {
           document.getElementById("salary").value = data.amount;
+          msg.style.color = "green";
+          msg.innerText = `📌 Current Salary: ₹${data.amount} per order`;
+        } else {
+          msg.style.color = "gray";
+          msg.innerText = "ℹ️ No salary set yet.";
         }
+      })
+      .catch(() => {
+        msg.style.color = "red";
+        msg.innerText = "❌ Error loading current salary.";
       });
     };
   </script>
